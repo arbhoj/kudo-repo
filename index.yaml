@@ -1,0 +1,12 @@
+apiVersion: v1
+entries:
+  argocd:
+  - digest: b25ca2b38386028101aa300d8c1df7ffef418d792121fc01af1ecca20449c9ec
+    maintainers:
+    - email: abhoj@d2iq.com>
+      name: Arvind Bhoj
+    name: argocd
+    operatorVersion: 1.0.0
+    urls:
+    - http://localhost/argocd-1.0.0.tgz
+generated: "2021-04-27T14:17:57.907823-04:00"
