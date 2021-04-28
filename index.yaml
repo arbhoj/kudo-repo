@@ -8,5 +8,5 @@ entries:
     name: argocd
     operatorVersion: 1.0.0
     urls:
-    - http://localhost/argocd-1.0.0.tgz
+    - https://raw.githubusercontent.com/arbhoj/kudo-repo/master/argocd-1.0.0.tgz
 generated: "2021-04-27T14:17:57.907823-04:00"
