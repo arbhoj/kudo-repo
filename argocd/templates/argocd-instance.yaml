@@ -1,0 +1,66 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ArgoCD
+metadata:
+  name: {{ .Name }}-argocd
+  namespace: {{ .Namespace }}
+spec:
+  version: {{ .Params.argo_image_version }}
+  resourceCustomizations: |
+    extensions/Ingress:
+        health.lua: |
+          hs = {}
+          hs.status = "Healthy"
+          return hs
+    networking.k8s.io/Ingress:
+        health.lua: |
+          hs = {}
+          hs.status = "Healthy"
+          return hs 
+  controller:
+    resources:
+      limits:
+        memory: 1Gi
+  ha:
+    enabled: true
+  kustomizeBuildOptions: --load_restrictor none
+  oidcConfig: |
+    name: {{ .Name }}-argocd-client
+    issuer: https://{{ .Params.konvoy_host }}/dex
+    clientID: dex-controller-{{ .Name }}-argocd-client
+    clientSecret: Cs1ymn3rmWzyAwKNm3L7su3adWUAuCPcBp9nctAePwNZKtuYf9FZsUO4qnHjDZUr
+  rbac:
+    defaultPolicy: role:readonly
+    policy: |
+      g, SecGrp-DKP-Admins, role:admin
+    scopes: '[groups]'
+  server:
+    resources:
+      limits:
+        cpu: "1"
+        memory: 1Gi
+      requests:
+        cpu: 250m
+        memory: 64Mi
+    autoscale:
+      enabled: true
+      hpa:
+        maxReplicas: {{ .Params.max_replicas  }}
+        minReplicas: {{ .Params.min_replicas  }}
+        scaleTargetRef:
+          apiVersion: apps/v1
+          kind: Deployment
+          name: {{ .Name }}-argocd-server
+        targetCPUUtilizationPercentage: 50
+    grpc:
+      host: {{ .Params.host }}
+    host: {{ .Params.host }}
+    ingress:
+      annotations:
+        kubernetes.io/ingress.class: {{ .Params.ingress_class }}
+      enabled: true
+      path: /
+      tls:
+      - hosts:
+        - {{ .Params.host }}
+        secretName: {{ .Params.cert_secret }}
+    insecure: true

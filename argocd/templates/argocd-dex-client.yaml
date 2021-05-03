@@ -1,0 +1,11 @@
+apiVersion: dex.mesosphere.io/v1alpha1
+kind: Client
+metadata:
+  name: {{ .Name }}-argocd-client
+  namespace: {{ .Params.addons_namespace }}
+spec:
+  displayName: {{ .Name }}-argocd-client
+  clientSecretRef:
+    name: dex-client-secret-{{ .Name }}
+  redirectURIs:
+  - https://{{ .Params.host }}/auth/callback

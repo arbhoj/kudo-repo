@@ -1,0 +1,131 @@
+name: "argocd"
+operatorVersion: "1.0.0"
+kudoVersion: 0.16.0
+kubernetesVersion: 1.19.03
+maintainers:
+- name: Arvind Bhoj 
+  email: abhoj@d2iq.com>
+url: https://github.com/argoproj-labs/argocd-operator
+tasks:
+- name: deploy_crds
+  kind: Apply
+  spec:
+    resources:
+    - argoproj.io_argocdexports_crd.yaml
+    - argoproj.io_argocds_crd.yaml
+    - argoproj.io_applications_crd.yaml
+    - argoproj.io_appprojects_crd.yaml
+    - argoproj.io_applicationsets.yaml
+- name: deploy_roles
+  kind: Apply
+  spec:
+    resources:
+    - role.yaml
+    - cluster_role.yaml
+- name: deploy_role_bindings
+  kind: Apply
+  spec:
+    resources:
+    - role_binding.yaml
+    - cluster_role_binding.yaml
+    - argocd_admin_rbac.yaml #Arvind added this as a workaround for: https://github.com/argoproj-labs/argocd-operator/issues/40 
+- name: deploy_service_account
+  kind: Apply
+  spec:
+    resources:
+    - service_account.yaml
+- name: deploy_operator
+  kind: Apply
+  spec:
+    resources:
+    - operator.yaml
+- name: register_dex_client
+  kind: Apply
+  spec:
+    resources:
+    - argocd-dex-client-secret.yaml
+    - argocd-dex-client.yaml
+- name: create_instance
+  kind: Apply
+  spec:
+    resources:
+    - argocd-instance.yaml 
+plans:
+  deploy:
+    strategy: serial
+    phases:
+    - name: setup_operator
+      strategy: serial
+      steps:
+      - name: deploy_crds
+        tasks:
+        - deploy_crds
+      - name: deploy_rbac
+        tasks:
+        - deploy_roles
+        - deploy_role_bindings
+        - deploy_service_account
+      - name: dex_registration
+        tasks:
+        - register_dex_client
+      - name: deploy_operator
+        tasks:
+        - deploy_operator
+    - name: create_operator_instance    
+      strategy: serial
+      steps:
+      - name: create_instance
+        tasks:
+        - create_instance
+  update:
+    strategy: serial
+    phases:
+    - name: setup_operator
+      strategy: serial
+      steps:
+      - name: deploy_crds
+        tasks:
+        - deploy_crds
+      - name: deploy_rbac
+        tasks:
+        - deploy_roles
+        - deploy_role_bindings
+        - deploy_service_account
+      - name: dex_registration
+        tasks:
+        - register_dex_client
+      - name: deploy_operator
+        tasks:
+        - deploy_operator
+    - name: create_operator_instance
+      strategy: serial
+      steps:
+      - name: create_instance
+        tasks:
+        - create_instance
+  upgrade:
+    strategy: serial
+    phases:
+    - name: setup_operator
+      strategy: serial
+      steps:
+      - name: deploy_crds
+        tasks:
+        - deploy_crds
+      - name: deploy_rbac
+        tasks:
+        - deploy_roles
+        - deploy_role_bindings
+        - deploy_service_account
+      - name: dex_registration
+        tasks:
+        - register_dex_client
+      - name: deploy_operator
+        tasks:
+        - deploy_operator
+    - name: create_operator_instance
+      strategy: serial
+      steps:
+      - name: create_instance
+        tasks:
+        - create_instance
