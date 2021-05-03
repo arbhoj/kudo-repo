@@ -15,7 +15,7 @@ roleRef:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: argocd-operator
+  name: argocd-application-controller
   namespace: {{ .Namespace }}
 subjects:
 - kind: ServiceAccount
