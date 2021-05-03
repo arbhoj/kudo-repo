@@ -19,11 +19,15 @@ rules:
   - list
   - watch
 
-###Added this as a workaround as the operator did not auto-create this
+##Added as a workaround cause the opertor did not create it
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/component: application-controller
+    app.kubernetes.io/name: argocd-application-controller
+    app.kubernetes.io/part-of: argocd
   name: argocd-application-controller
 rules:
 - apiGroups:
