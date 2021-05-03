@@ -21,6 +21,6 @@ subjects:
 - kind: ServiceAccount
   name: argocd-application-controller
 roleRef:
-  kind: Role
+  kind: ClusterRole
   name: argocd-application-controller
   apiGroup: rbac.authorization.k8s.io
