@@ -83,46 +83,9 @@ plans:
     - name: setup_operator
       strategy: serial
       steps:
-      - name: deploy_crds
-        tasks:
-        - deploy_crds
-      - name: deploy_rbac
-        tasks:
-        - deploy_roles
-        - deploy_role_bindings
-        - deploy_service_account
       - name: dex_registration
         tasks:
         - register_dex_client
-      - name: deploy_operator
-        tasks:
-        - deploy_operator
-    - name: create_operator_instance
-      strategy: serial
-      steps:
-      - name: create_instance
-        tasks:
-        - create_instance
-  upgrade:
-    strategy: serial
-    phases:
-    - name: setup_operator
-      strategy: serial
-      steps:
-      - name: deploy_crds
-        tasks:
-        - deploy_crds
-      - name: deploy_rbac
-        tasks:
-        - deploy_roles
-        - deploy_role_bindings
-        - deploy_service_account
-      - name: dex_registration
-        tasks:
-        - register_dex_client
-      - name: deploy_operator
-        tasks:
-        - deploy_operator
     - name: create_operator_instance
       strategy: serial
       steps:

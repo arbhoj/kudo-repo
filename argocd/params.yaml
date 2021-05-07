@@ -2,20 +2,26 @@ apiVersion: kudo.dev/v1beta1
 parameters:
 - name: host
   description: "This is the dns name of the argocd server instance"
+  trigger: update
 - name: konvoy_host
   description: "This is the dns name of the konvoy host that is running the dex instance"
+  trigger: update
 - name: ingress_class
   description: "Ingress class to use in the ingress resource"
   default: "traefik"
+  trigger: update
 - name: operator_image
   description: "Operator image to use"
-  default: "quay.io/redhat-cop/argocd-operator:v0.0.15" 
+  default: "quay.io/redhat-cop/argocd-operator:v0.0.15"
+  trigger: update
 - name: addons_namespace 
   description: "Namespace containing konvoy addons"
   default: "kubeaddons"
+  trigger: update
 - name: cert_secret
   description: "This is the name of the secret containing the certificate for the argocd dns name"
-  default: "argo-custom-cert"
+  default: "custom-cert-argocd"
+  trigger: update
 - name: argo_image_version
   description: "This is the tag or the sha of the argoproj/argocd image"
   default: "sha256:da25560084a0cb4657ecafcf5bfe9a88ea87589e1ed04beb259292908eaea43c"
@@ -23,6 +29,8 @@ parameters:
 - name: max_replicas
   description: "Max replicas value for HPA for argocd server"
   default: 4
+  trigger: update
 - name: min_replicas
   description: "Min replicas value for HPA for argocd server"
-  default: 4
+  default: 2
+  trigger: update
